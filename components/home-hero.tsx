@@ -27,7 +27,7 @@ export function HomeHero({ site = defaultSite }: { site?: SiteConfig }) {
         {site.openToWork && (
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant="secondary">
-              <span aria-hidden="true" className="size-1.5 rounded-full bg-emerald-500" />
+              <span aria-hidden="true" className="size-1.5 rounded-full bg-link" />
               Open to work
             </Badge>
             <span className="text-sm text-muted-foreground">{site.workStatus}</span>
