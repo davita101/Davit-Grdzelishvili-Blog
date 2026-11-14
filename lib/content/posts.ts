@@ -132,10 +132,10 @@ function comparePosts(a: Post, b: Post): number {
 /** A loader over one folder. The app uses content/posts; tests pass a fixtures folder. */
 export function createPostLoader(dir: string = POSTS_DIR) {
   function loadAll(): LoadedPost[] {
-    if (!fs.existsSync(dir)) return [];
+    if (!fs.existsSync(/*turbopackIgnore: true*/ dir)) return [];
     const drafts = includeDrafts();
     return fs
-      .readdirSync(dir)
+      .readdirSync(/*turbopackIgnore: true*/ dir)
       .filter((file) => file.endsWith(".mdx"))
       .map((file) => loadPost(dir, file))
       .filter(({ post }) => drafts || !post.draft)

@@ -19,6 +19,12 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  // Post pages read content/posts with fs. The loader opts out of tracing (it would
+  // pull in the whole project), so include the posts explicitly for any runtime
+  // render, e.g. revalidation.
+  outputFileTracingIncludes: {
+    "/blog/**": ["./content/posts/**"],
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
