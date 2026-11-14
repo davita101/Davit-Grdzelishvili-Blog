@@ -71,9 +71,16 @@ describe("PostFrontmatter", () => {
     expect(issuesFor({ ...valid, updated: "Nov 20, 2026" })).toContain("updated");
   });
 
-  it("rejects an uppercase tag", () => {
-    expect(issuesFor({ ...valid, tags: ["NextJS"] })).toContain("tags.0");
+  it("accepts kebab-case tags", () => {
+    expect(issuesFor({ ...valid, tags: ["next-js", "react-19"] })).toEqual([]);
   });
+
+  it.each(["NextJS", "react hooks", "next.js", "", "-react", "react-"])(
+    "rejects tag %j",
+    (tag) => {
+      expect(issuesFor({ ...valid, tags: [tag] })).toContain("tags.0");
+    },
+  );
 
   it("rejects 0 tags and 6 tags, accepts 1 and 5", () => {
     expect(issuesFor({ ...valid, tags: [] })).toContain("tags");

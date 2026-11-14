@@ -26,16 +26,14 @@ export const MonthString = z
 /** A site-relative path such as "/posts/my-post/cover.png". */
 const SitePath = z.string().startsWith("/", "Must start with \"/\"");
 
-/** Lowercase kebab-case, used for post slugs. */
-export const Slug = z
-  .string()
-  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug must be lowercase kebab-case");
+/** Lowercase kebab-case: safe as a URL segment. */
+const KEBAB_CASE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
-export const Tag = z
-  .string()
-  .trim()
-  .min(1, "Tag can't be empty")
-  .refine((t) => t === t.toLowerCase(), "Tags must be lowercase");
+/** Post slug, e.g. "hello-world". */
+export const Slug = z.string().regex(KEBAB_CASE, "Slug must be lowercase kebab-case");
+
+/** Post tag, used in /blog/tags/[tag], e.g. "next-js". */
+export const Tag = z.string().regex(KEBAB_CASE, "Tags must be lowercase kebab-case");
 
 // --- Posts (project.md §5.1) ---
 
