@@ -3,23 +3,26 @@ import { formatPostDate } from "@/components/post-header";
 import { TagChip } from "@/components/tag-chip";
 import type { Post } from "@/lib/content/schema";
 
-type PostCardProps = Pick<Post, "slug" | "title" | "description" | "date" | "readingTime" | "tags">;
+type PostCardProps = Pick<Post, "slug" | "title" | "description" | "date" | "readingTime" | "tags"> & {
+  /** Heading level of the title. Use "h3" when the card sits under an h2. */
+  headingLevel?: "h2" | "h3";
+};
 
 /**
  * A post in a list. The title link covers the whole card (via ::after), and the
  * tag chips sit above it so they stay separately clickable, with no nested links.
  */
-export function PostCard({ slug, title, description, date, readingTime, tags }: PostCardProps) {
+export function PostCard({ slug, title, description, date, readingTime, tags, headingLevel: Heading = "h2" }: PostCardProps) {
   return (
     <article className="group relative flex flex-col gap-3 rounded-lg border bg-card p-5 transition-[translate,box-shadow] duration-200 hover:shadow-card motion-safe:hover:-translate-y-0.5 focus-within:shadow-card">
-      <h2 className="text-lg font-semibold tracking-tight">
+      <Heading className="text-lg font-semibold tracking-tight">
         <Link
           href={`/blog/${slug}`}
           className="outline-none after:absolute after:inset-0 after:rounded-lg focus-visible:after:outline-2 focus-visible:after:outline-ring"
         >
           {title}
         </Link>
-      </h2>
+      </Heading>
       <p className="flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
         <time dateTime={date}>{formatPostDate(date)}</time>
         <span aria-hidden="true">·</span>
