@@ -29,7 +29,7 @@ Your task (from `get_my_task`) lists the `project.md` sections it needs. Read th
 
 ## Checking your change on a Vercel preview
 
-- Get the preview URL from GitHub, never from the branch name (Vercel shortens long names): the Vercel comment on your PR (`gh pr view <n> --comments`), or the PR's deployment status (`gh api repos/<owner>/<repo>/deployments?ref=<branch>`). Wait until the deployment succeeds.
+- Wait until the `Vercel` check on your PR succeeds (`gh pr checks <n>`). Then take the preview URL from the Vercel bot comment on your PR (`gh pr view <n> --comments`, the **Preview** link). Never build it from the branch name (Vercel shortens long names). The GitHub deployments API returns nothing for this repo.
 - Previews are protected. Send the header `x-vercel-protection-bypass: $VERCEL_AUTOMATION_BYPASS_SECRET` on every request. For browser tests, also send `x-vercel-set-bypass-cookie: true` on the first request.
 - If a preview URL is blocked by your sandbox, call `request_access` for `*.vercel.app` (all previews) rather than the single URL.
 - Check at 375 px and desktop width, in dark and light theme.

@@ -33,10 +33,8 @@ Hosted on Vercel.
 
 ### Reading a preview (agents)
 
-1. Get the preview URL from GitHub, never from the branch name (Vercel shortens long names):
-   - the Vercel bot comment on the PR: `gh pr view <n> --comments`, or
-   - the PR's deployments: `gh api repos/<owner>/<repo>/deployments?ref=<branch>`, then the `environment_url` of its latest status.
-2. Wait until the deployment succeeds (the `Vercel` check on the PR is green).
+1. Wait until the `Vercel` status check on the PR succeeds (`gh pr checks <n>`).
+2. Get the preview URL from the Vercel bot comment on the PR (`gh pr view <n> --comments`, the **Preview** link). Never build it from the branch name: Vercel shortens long names. This repo's Vercel integration does not create GitHub deployments, so the deployments API returns nothing, and the `Vercel` status links to the dashboard, not the preview.
 3. Previews are protected. Send the bypass header on every request. The value comes from the `VERCEL_AUTOMATION_BYPASS_SECRET` environment variable; never paste it anywhere.
 
    ```bash
