@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { TagChip } from "@/components/tag-chip";
 import type { Post } from "@/lib/content/schema";
 
 /** "2026-11-12" → "November 12, 2026". UTC, so the day never shifts. */
@@ -30,11 +31,10 @@ export function PostHeader({ title, date, updated, readingTime, tags, cover }: P
         <span aria-hidden="true">·</span>
         <span>{readingTime} min read</span>
       </p>
-      {/* Plain text for now; the blog list task links them to tag pages. */}
       <ul aria-label="Tags" className="flex flex-wrap gap-2">
         {tags.map((tag) => (
-          <li key={tag} className="rounded-md bg-muted px-2 py-0.5 font-mono text-xs text-muted-foreground">
-            {tag}
+          <li key={tag}>
+            <TagChip tag={tag} />
           </li>
         ))}
       </ul>
