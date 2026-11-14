@@ -85,3 +85,29 @@ Your task (from `get_my_task`) lists the `project.md` sections it needs. Read th
 |---|---|
 | `pnpm dev` | Run the app locally |
 | `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build` | Checks. All must pass before a PR. |
+
+## Token-saving tools
+
+Every agent runs the same three tools. The product owner approved them on 2026-11-14. Set them up once per sandbox, then restart Claude Code.
+
+| Tool | Does | Setup |
+|---|---|---|
+| RTK | Compresses shell output (git, pnpm, tests, builds) before you read it | `curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh \| sh`, then `rtk init -g --hook-only --no-patch` and add the `PreToolUse` hook it prints to `~/.claude/settings.json`. Check: `rtk gain` shows a savings table. The crates.io `rtk` is a different tool. |
+| Caveman | Shortens your replies | Needs Node (`sudo apt-get install -y nodejs-24`). `claude plugin marketplace add JuliusBrussee/caveman`, then `claude plugin install caveman@caveman`. Turn its telemetry off: `export DO_NOT_TRACK=1` in `/etc/sandbox-persistent.sh` and `"env": {"DO_NOT_TRACK": "1"}` in `~/.claude/settings.json`. |
+| Graphify | A local code graph to query before reading files | `uv tool install graphifyy` (two y's). The skill and hooks are already in this repo's `.claude/`. Build the graph with `graphify update .` |
+
+Rules:
+- RTK: if a compressed output hides something you need, rerun it with `rtk bypass <command>`. Never turn on RTK telemetry, pipelines or the proxy.
+- Caveman: default level only, never `/ultracave` or `/megacave`. Text the product owner reads (chat replies, `ask_user`, PR bodies, review comments, commit messages) follows "How to talk to the product owner": plain words and full short sentences, not caveman grunt. Never sign in to Caveman Auto (it sends prompts to its cloud). Don't run `/caveman-compress` on repo docs.
+- Graphify: `graphify-out/` is in `.gitignore`, so each agent builds its own. Never commit it.
+
+## graphify
+
+This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
+
+Rules:
+- When graphify-out/graph.json exists, run `graphify query "<question>"` before your first grep, search or source-file read for a codebase question, and put this rule in every subagent prompt that explores code. Read raw files only for lines the graph or an earlier read already located. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
+- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
+- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
+- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
+- If graphify-out/ is missing (fresh clone or new sandbox), run `graphify update .` first. It is local and has no API cost.
