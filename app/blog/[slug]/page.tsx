@@ -36,7 +36,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
  */
 async function loadPost(slug: string) {
   "use cache";
-  console.error("DEBUG loadPost", slug, JSON.stringify(process.env.VERCEL_ENV));
   const post = getPostBySlug(slug);
   if (!post) return null;
   const content = await renderPost(slug);
