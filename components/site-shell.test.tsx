@@ -63,7 +63,7 @@ describe("SiteHeader", () => {
 
 describe("MobileNav", () => {
   it("opens from the trigger and closes when a link is chosen", () => {
-    render(<MobileNav pathname="/" />);
+    render(<MobileNav />);
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
@@ -77,14 +77,15 @@ describe("MobileNav", () => {
   });
 
   it("closes from its close button", () => {
-    render(<MobileNav pathname="/" />);
+    render(<MobileNav />);
     fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
     fireEvent.click(within(screen.getByRole("dialog")).getByRole("button", { name: "Close" }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
   it("marks the active link in the menu", () => {
-    render(<MobileNav pathname="/about" />);
+    pathname.current = "/about";
+    render(<MobileNav />);
     fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
     expect(screen.getByRole("link", { name: "About" })).toHaveAttribute("aria-current", "page");
   });
