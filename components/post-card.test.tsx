@@ -44,4 +44,10 @@ describe("TagChip", () => {
     render(<TagChip tag="react-19" />);
     expect(screen.getByRole("link", { name: "react-19" })).toHaveAttribute("href", "/blog/tags/react-19");
   });
+
+  it("renders the title as h3 when asked", () => {
+    render(<PostCard {...post} headingLevel="h3" />);
+    expect(screen.getByRole("heading", { level: 3, name: "Hello world" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { level: 2 })).not.toBeInTheDocument();
+  });
 });
