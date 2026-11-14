@@ -18,6 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Don't leave GITHUB_TOKEN in the runner's git config.
+          persist-credentials: false
 
       # Version comes from "packageManager" in package.json.
       - uses: pnpm/action-setup@v4
