@@ -22,3 +22,6 @@ next-env.d.ts
 npm-debug.log*
 .pnpm-debug.log*
 *.pem
+
+# Graphify code graph (each agent builds its own: graphify update .)
+graphify-out/
