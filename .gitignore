@@ -14,3 +14,11 @@ coverage/
 # OS / editor
 .DS_Store
 *.log
+
+# Next.js / TypeScript
+.vercel
+next-env.d.ts
+*.tsbuildinfo
+npm-debug.log*
+.pnpm-debug.log*
+*.pem
