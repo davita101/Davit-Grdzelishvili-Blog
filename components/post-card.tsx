@@ -11,7 +11,7 @@ type PostCardProps = Pick<Post, "slug" | "title" | "description" | "date" | "rea
  */
 export function PostCard({ slug, title, description, date, readingTime, tags }: PostCardProps) {
   return (
-    <article className="group relative flex flex-col gap-3 rounded-lg border bg-card p-5 transition-[transform,box-shadow] duration-200 hover:shadow-card motion-safe:hover:-translate-y-0.5 focus-within:shadow-card">
+    <article className="group relative flex flex-col gap-3 rounded-lg border bg-card p-5 transition-[translate,box-shadow] duration-200 hover:shadow-card motion-safe:hover:-translate-y-0.5 focus-within:shadow-card">
       <h2 className="text-lg font-semibold tracking-tight">
         <Link
           href={`/blog/${slug}`}
