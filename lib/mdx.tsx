@@ -5,6 +5,7 @@ import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import { MdxImage } from "@/components/mdx/mdx-image";
 import { MdxLink } from "@/components/mdx/mdx-link";
+import { MdxPre } from "@/components/mdx/mdx-pre";
 import { MdxTable } from "@/components/mdx/mdx-table";
 import { getPostSource } from "@/lib/content/posts";
 
@@ -15,6 +16,7 @@ type HastNode = { type: string; value?: string; children?: HastNode[] };
 export const mdxComponents: NonNullable<MDXRemoteProps["components"]> = {
   a: MdxLink,
   img: MdxImage,
+  pre: MdxPre,
   table: MdxTable,
 };
 
