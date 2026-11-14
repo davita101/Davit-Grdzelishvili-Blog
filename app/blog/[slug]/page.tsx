@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PostHeader } from "@/components/post-header";
-import { getAllPosts, getPostBySlug } from "@/lib/content/posts";
+import { PostNav } from "@/components/post-nav";
+import { Toc } from "@/components/toc";
+import { getAdjacentPosts, getAllPosts, getPostBySlug } from "@/lib/content/posts";
 import { renderPost } from "@/lib/mdx";
 import { SITE_URL } from "@/lib/site";
 
@@ -48,10 +50,20 @@ export default async function PostPage({ params }: Props) {
   if (!loaded) notFound();
   const { post, content } = loaded;
 
+  const { prev, next } = getAdjacentPosts(slug);
+
   return (
-    <article className="mx-auto max-w-content px-4 py-12 sm:py-16">
-      <PostHeader {...post} />
-      <div className="post-body mt-10">{content}</div>
-    </article>
+    <div className="mx-auto flex max-w-wide justify-center gap-12 px-4 py-12 sm:py-16">
+      <article className="w-full max-w-content min-w-0">
+        <PostHeader {...post} />
+        <div className="post-body mt-10">{content}</div>
+        <PostNav prev={prev} next={next} />
+      </article>
+      <aside className="hidden w-56 shrink-0 lg:block">
+        <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
+          <Toc headings={post.headings} />
+        </div>
+      </aside>
+    </div>
   );
 }
