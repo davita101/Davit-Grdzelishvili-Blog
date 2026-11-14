@@ -1,0 +1,50 @@
+---
+title: "MDX feature tour: headings, code and images"
+description: A sample draft that exercises headings, highlighted code in several languages, inline code, links and images.
+date: 2026-11-12
+tags: [mdx, nextjs, sample]
+draft: true
+cover: /posts/mdx-feature-tour/pipeline.png
+---
+
+This is a sample post used to check how the blog renders MDX. It is a draft, so it never appears in production.
+
+## Headings
+
+Second-level headings appear in the table of contents. So do third-level ones.
+
+### A third-level heading
+
+Use `##` for sections and `###` for subsections. Inline code like `getAllPosts()` should stand out from the text around it.
+
+## Code blocks
+
+A TypeScript block with a file name label:
+
+```ts title="lib/reading-time.ts"
+export function readingTime(text: string): number {
+  const words = text.split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.ceil(words / 200));
+}
+```
+
+A shell block:
+
+```bash
+pnpm install
+pnpm test
+```
+
+And a short JSON block:
+
+```json
+{ "draft": true, "tags": ["mdx", "sample"] }
+```
+
+## Images and links
+
+Images live in `public/posts/<slug>/` and render with alt text:
+
+![Three boxes joined left to right: source, transform, output](/posts/mdx-feature-tour/pipeline.png)
+
+Read more about the format in the [MDX documentation](https://mdxjs.com/docs/).
