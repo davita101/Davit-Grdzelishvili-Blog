@@ -20,6 +20,7 @@ Open http://localhost:3000. Copy `.env.example` to `.env.local` if you need to s
 | `pnpm start` | Serve the production build |
 | `pnpm lint` | ESLint |
 | `pnpm typecheck` | `tsc --noEmit` |
+| `pnpm test` | Run the Vitest suite once (`vitest run`) |
 
 ## Docs
 
