@@ -1,3 +1,5 @@
 allowBuilds:
+  # posthog-js dependency; its postinstall only prints a donation banner.
+  core-js: false
   sharp: false
   unrs-resolver: false
