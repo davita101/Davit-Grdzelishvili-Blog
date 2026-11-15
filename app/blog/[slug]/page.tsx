@@ -4,8 +4,9 @@ import { PostHeader } from "@/components/post-header";
 import { PostNav } from "@/components/post-nav";
 import { Toc } from "@/components/toc";
 import { getAdjacentPosts, getAllPosts, getPostBySlug } from "@/lib/content/posts";
+import { blogPostingJsonLd, serializeJsonLd } from "@/lib/json-ld";
 import { renderPost } from "@/lib/mdx";
-import { SITE_URL } from "@/lib/site";
+import { SITE_URL, site } from "@/lib/site";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -25,10 +26,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = getPostBySlug(slug);
   if (!post) return {};
+  const url = `${SITE_URL}/blog/${post.slug}`;
   return {
     title: post.title,
     description: post.description,
-    alternates: { canonical: `${SITE_URL}/blog/${post.slug}` },
+    alternates: { canonical: url },
+    // Next replaces (not merges) the layout's openGraph, so repeat siteName and locale.
+    openGraph: {
+      type: "article",
+      siteName: site.name,
+      locale: "en_US",
+      url,
+      title: post.title,
+      description: post.description,
+      publishedTime: post.date,
+      modifiedTime: post.updated,
+      authors: [site.name],
+      tags: post.tags,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.description,
+    },
   };
 }
 
@@ -54,6 +74,11 @@ export default async function PostPage({ params }: Props) {
 
   return (
     <div className="mx-auto flex max-w-wide justify-center gap-12 px-4 py-12 sm:py-16">
+      <script
+        type="application/ld+json"
+        // serializeJsonLd escapes "<", so post content cannot close this tag.
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(blogPostingJsonLd(post, site)) }}
+      />
       <article className="w-full max-w-content min-w-0">
         <PostHeader {...post} />
         <div className="post-body mt-10">{content}</div>
