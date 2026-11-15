@@ -65,7 +65,7 @@
     --secondary: oklch(0.967 0.001 286.375);
     --secondary-foreground: oklch(0.21 0.006 285.885);
     --muted: oklch(0.967 0.001 286.375);
-    --muted-foreground: oklch(0.552 0.016 285.938);
+    --muted-foreground: oklch(0.53 0.016 285.938);
     --accent: oklch(0.967 0.001 286.375);
     --accent-foreground: oklch(0.21 0.006 285.885);
     --destructive: oklch(0.577 0.245 27.325);
@@ -308,5 +308,12 @@
   }
   .dark .post-body figure[data-rehype-pretty-code-figure] code span {
     color: var(--shiki-dark);
+  }
+  /* Shiki colors below AA (4.5:1) on the code block background, swapped for darker/lighter shades. */
+  html:not(.dark) .post-body figure[data-rehype-pretty-code-figure] code span[style*="--shiki-light:#e36209" i] {
+    color: #bc4c00; /* github-light orange 3.49:1 -> 5.03:1 on white */
+  }
+  .dark .post-body figure[data-rehype-pretty-code-figure] code span[style*="--shiki-dark:#6a737d" i] {
+    color: #959da5; /* github-dark comment 3.68:1 -> 6.45:1 on card */
   }
 }
