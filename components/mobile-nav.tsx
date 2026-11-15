@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { site } from "@/lib/site";
+import type { SiteConfig } from "@/lib/content/schema";
 import { cn } from "@/lib/utils";
 
 /**
@@ -19,14 +19,20 @@ export function navAriaCurrent(pathname: string, href: string): "page" | "true" 
   return undefined;
 }
 
+/**
+ * Nav items come in as a prop from the server header. Importing lib/site here would
+ * bundle its zod schema into client JS (and zod's eval probe trips the CSP).
+ */
+type NavProps = { items: SiteConfig["nav"] };
+
 /** Inline nav for 768 px and up. Client only for the active-link state. */
-export function NavLinks() {
+export function NavLinks({ items }: NavProps) {
   const pathname = usePathname();
 
   return (
     <nav aria-label="Main" className="hidden md:block">
       <ul className="flex items-center gap-1">
-        {site.nav.map((item) => {
+        {items.map((item) => {
           const current = navAriaCurrent(pathname, item.href);
           return (
             <li key={item.href}>
@@ -49,7 +55,7 @@ export function NavLinks() {
 }
 
 /** Nav in a sheet below 768 px. Closes when a link is chosen. */
-export function MobileNav() {
+export function MobileNav({ items }: NavProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -66,7 +72,7 @@ export function MobileNav() {
         </SheetHeader>
         <nav aria-label="Mobile">
           <ul className="flex flex-col px-2">
-            {site.nav.map((item) => {
+            {items.map((item) => {
               const current = navAriaCurrent(pathname, item.href);
               return (
                 <li key={item.href}>
