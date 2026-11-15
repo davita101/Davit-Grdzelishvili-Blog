@@ -49,6 +49,8 @@ describe("PostHogProvider", () => {
         capture_pageview: false,
         autocapture: false,
         disable_session_recording: true,
+        disable_external_dependency_loading: true,
+        advanced_disable_flags: true,
       }),
     );
   });
