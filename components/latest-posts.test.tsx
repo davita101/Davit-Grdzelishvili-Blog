@@ -39,9 +39,12 @@ describe("LatestPosts", () => {
     expect(screen.getByRole("link", { name: "View all posts" })).toHaveAttribute("href", "/blog");
   });
 
-  it("renders nothing when there are no posts", () => {
+  it("shows the empty state under its heading when there are no posts", () => {
     vi.mocked(getAllPosts).mockReturnValue([]);
-    const { container } = render(<LatestPosts />);
-    expect(container).toBeEmptyDOMElement();
+    render(<LatestPosts />);
+    expect(screen.getByRole("heading", { level: 2, name: "Latest posts" })).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent("No posts yet. Check back soon.");
+    expect(screen.queryByRole("link", { name: "View all posts" })).not.toBeInTheDocument();
+    expect(screen.queryAllByRole("listitem")).toHaveLength(0);
   });
 });

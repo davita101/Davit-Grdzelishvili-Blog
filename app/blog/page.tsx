@@ -17,9 +17,11 @@ export default function BlogPage() {
   return (
     <div className="mx-auto max-w-content px-4 py-12 sm:py-16">
       <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Blog</h1>
-      <p className="mt-2 text-muted-foreground">
-        {posts.length === 1 ? "1 post" : `${posts.length} posts`}, newest first.
-      </p>
+      {posts.length > 0 && (
+        <p className="mt-2 text-muted-foreground">
+          {posts.length === 1 ? "1 post" : `${posts.length} posts`}, newest first.
+        </p>
+      )}
       <div className="mt-8">
         <PostList posts={posts} />
       </div>

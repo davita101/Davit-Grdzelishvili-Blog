@@ -145,14 +145,17 @@
   }
 }
 
-/* Respect reduced motion everywhere. */
+/*
+ * Respect reduced motion everywhere: no animations (hero fade/slide, mobile menu
+ * slide), no transitions (card lift, hover colors), no smooth scrolling.
+ * Radix's Presence unmounts at once when there is no animation, so the menu still closes.
+ */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    animation: none !important;
+    transition: none !important;
     scroll-behavior: auto !important;
   }
 }
