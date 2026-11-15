@@ -4,16 +4,24 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { SkipLink } from "@/components/skip-link";
 import { ThemeProvider } from "@/components/theme-provider";
-import { site } from "@/lib/site";
+import { SITE_URL, site } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import "./globals.css";
 
 const geistSans = Geist({ subsets: ["latin"], variable: "--font-geist-sans" });
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
 
+/** Site-wide defaults. Pages override title, description and canonical. */
 export const metadata: Metadata = {
-  title: site.name,
+  metadataBase: new URL(SITE_URL),
+  title: { default: site.name, template: `%s · ${site.name}` },
   description: site.bio,
+  openGraph: {
+    type: "website",
+    siteName: site.name,
+    locale: "en_US",
+  },
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({
