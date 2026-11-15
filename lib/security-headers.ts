@@ -27,14 +27,22 @@ const VERCEL_TOOLBAR: Partial<Record<string, string[]>> = {
   "frame-src": ["https://vercel.live"],
 };
 
-/** Returns the origin of the PostHog host, or undefined when unset. Throws on an invalid URL. */
+/** Returns the origin of the PostHog host, or undefined when it cannot be used. */
 export function posthogOrigin(host: string | undefined): string | undefined {
   const value = host?.trim();
   if (!value) return undefined;
-  const url = new URL(value); // throws on a bad value, so a typo fails the build
-  if (url.protocol !== "https:" && url.protocol !== "http:") {
-    throw new Error(`NEXT_PUBLIC_POSTHOG_HOST must be an http(s) URL, got "${value}"`);
+
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" || url.protocol === "http:" ? url.origin : undefined;
+  } catch {
+    return undefined;
   }
+}
+
+function posthogAssetOrigin(host: string): string {
+  const url = new URL(host);
+  url.hostname = url.hostname.replace(".i.posthog.com", "-assets.i.posthog.com");
   return url.origin;
 }
 
@@ -59,7 +67,11 @@ export function buildCsp(options: SecurityHeaderOptions = {}): string {
   if (options.isDev) directives["script-src"].push("'unsafe-eval'");
 
   const posthog = posthogOrigin(options.posthogHost);
-  if (posthog) directives["connect-src"].push(posthog);
+  if (posthog) {
+    directives["connect-src"].push(posthog);
+    directives["script-src"].push(posthogAssetOrigin(posthog));
+    directives["worker-src"] = ["'self'", "blob:"];
+  }
 
   if (options.vercelEnv === "preview") {
     for (const [name, sources] of Object.entries(VERCEL_TOOLBAR)) {

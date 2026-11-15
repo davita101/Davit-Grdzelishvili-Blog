@@ -1,5 +1,6 @@
 "use client";
 
+import posthog from "posthog-js";
 import { useEffect, useRef, useState } from "react";
 
 const RESET_MS = 2000;
@@ -21,6 +22,9 @@ export function CopyButton() {
       await navigator.clipboard.writeText(code.replace(/\n$/, ""));
     } catch {
       return;
+    }
+    if (posthog.__loaded) {
+      posthog.capture("code_copied", { code_length: code.length });
     }
     setCopied(true);
     clearTimeout(timer.current);

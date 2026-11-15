@@ -40,10 +40,13 @@ describe("buildCsp", () => {
     });
   });
 
-  it("adds the PostHog origin to connect-src only", () => {
-    const csp = buildCsp({ posthogHost: "https://eu.i.posthog.com/", vercelEnv: "production" });
-    expect(parseCsp(csp)["connect-src"]).toEqual(["'self'", "https://eu.i.posthog.com"]);
-    expect(csp.match(/posthog/g)).toHaveLength(1);
+  it("allows PostHog ingestion, assets, and replay workers", () => {
+    const csp = parseCsp(
+      buildCsp({ posthogHost: "https://eu.i.posthog.com/", vercelEnv: "production" }),
+    );
+    expect(csp["connect-src"]).toEqual(["'self'", "https://eu.i.posthog.com"]);
+    expect(csp["script-src"]).toContain("https://eu-assets.i.posthog.com");
+    expect(csp["worker-src"]).toEqual(["'self'", "blob:"]);
   });
 
   it("ignores an unset or blank PostHog host", () => {
@@ -52,9 +55,9 @@ describe("buildCsp", () => {
     expect(buildCsp({ posthogHost: undefined })).not.toContain("posthog");
   });
 
-  it("throws on an invalid PostHog host", () => {
-    expect(() => buildCsp({ posthogHost: "eu.i.posthog.com" })).toThrow();
-    expect(() => buildCsp({ posthogHost: "javascript:alert(1)" })).toThrow();
+  it("ignores an invalid PostHog host", () => {
+    expect(buildCsp({ posthogHost: "eu.i.posthog.com" })).toBe(buildCsp());
+    expect(buildCsp({ posthogHost: "javascript:alert(1)" })).toBe(buildCsp());
   });
 
   it("preview allows the Vercel toolbar", () => {
