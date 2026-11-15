@@ -8,7 +8,7 @@ type ProjectCardProps = Project & {
 };
 
 const linkClass =
-  "inline-flex items-center gap-1.5 rounded-sm text-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
+  "inline-flex items-center gap-1.5 rounded-sm text-sm font-medium text-link underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
 
 /**
  * A project in a grid: name, description, stack chips and its Repo / Live links.
