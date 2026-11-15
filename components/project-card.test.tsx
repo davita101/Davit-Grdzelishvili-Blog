@@ -23,8 +23,8 @@ describe("ProjectCard", () => {
 
   it("opens Repo and Live in a new tab with rel=noopener noreferrer", () => {
     render(<ProjectCard {...project} />);
-    const repo = screen.getByRole("link", { name: /Sample Project repository/ });
-    const live = screen.getByRole("link", { name: /Sample Project live site/ });
+    const repo = screen.getByRole("link", { name: /^Repo for Sample Project/ });
+    const live = screen.getByRole("link", { name: /^Live site for Sample Project/ });
     expect(repo).toHaveAttribute("href", project.repo);
     expect(live).toHaveAttribute("href", project.live);
     for (const link of [repo, live]) {
@@ -41,7 +41,7 @@ describe("ProjectCard", () => {
   it("renders only the links that are set", () => {
     render(<ProjectCard {...project} live={undefined} />);
     expect(screen.getAllByRole("link")).toHaveLength(1);
-    expect(screen.getByRole("link", { name: /repository/ })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /^Repo for/ })).toBeInTheDocument();
   });
 
   it("hides the Featured badge when not featured", () => {

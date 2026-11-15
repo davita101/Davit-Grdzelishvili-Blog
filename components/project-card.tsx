@@ -44,11 +44,11 @@ export function ProjectCard({
               href={repo}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label={`${name} repository (opens in a new tab)`}
               className={linkClass}
             >
               <FolderGit2 aria-hidden="true" className="size-4" />
-              Repo
+              Repo{" "}
+              <span className="sr-only">for {name} (opens in a new tab)</span>
             </a>
           )}
           {live && (
@@ -56,11 +56,11 @@ export function ProjectCard({
               href={live}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label={`${name} live site (opens in a new tab)`}
               className={linkClass}
             >
               <ExternalLink aria-hidden="true" className="size-4" />
-              Live
+              Live{" "}
+              <span className="sr-only">site for {name} (opens in a new tab)</span>
             </a>
           )}
         </div>
