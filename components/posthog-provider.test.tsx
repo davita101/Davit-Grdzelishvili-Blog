@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { setAnalyticsClient } from "@/lib/analytics";
 
@@ -19,6 +19,10 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  // Unmount first: a provider that turns ready as a test ends would otherwise track
+  // its $pageview after the client is reset, and the buffered event would leak into
+  // the next test when that test's provider sets the client.
+  cleanup();
   vi.clearAllMocks();
   setAnalyticsClient(null);
 });
