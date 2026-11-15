@@ -14,43 +14,67 @@ describe("site", () => {
 });
 
 describe("resolveSiteUrl", () => {
-  it("falls back to localhost when unset or blank", () => {
+  it("uses the site URL when set, even if the Vercel URL is set too", () => {
+    expect(resolveSiteUrl("https://example.com", "preview-abc.vercel.app")).toBe("https://example.com");
+    expect(resolveSiteUrl("https://example.com", undefined)).toBe("https://example.com");
+  });
+
+  it("uses https:// plus the Vercel host when only the Vercel URL is set", () => {
+    expect(resolveSiteUrl(undefined, "preview-abc.vercel.app")).toBe("https://preview-abc.vercel.app");
+    expect(resolveSiteUrl("", "preview-abc.vercel.app")).toBe("https://preview-abc.vercel.app");
+    expect(resolveSiteUrl("   ", " preview-abc.vercel.app ")).toBe("https://preview-abc.vercel.app");
+  });
+
+  it("does not double the protocol if the Vercel URL already has one", () => {
+    expect(resolveSiteUrl(undefined, "https://preview-abc.vercel.app")).toBe("https://preview-abc.vercel.app");
+  });
+
+  it("falls back to localhost when neither is set or both are blank", () => {
     expect(resolveSiteUrl(undefined)).toBe("http://localhost:3000");
-    expect(resolveSiteUrl("")).toBe("http://localhost:3000");
-    expect(resolveSiteUrl("   ")).toBe("http://localhost:3000");
+    expect(resolveSiteUrl(undefined, undefined)).toBe("http://localhost:3000");
+    expect(resolveSiteUrl("", "")).toBe("http://localhost:3000");
+    expect(resolveSiteUrl("   ", "   ")).toBe("http://localhost:3000");
   });
 
   it("strips trailing slashes", () => {
     expect(resolveSiteUrl("https://example.com/")).toBe("https://example.com");
     expect(resolveSiteUrl("https://example.com///")).toBe("https://example.com");
     expect(resolveSiteUrl("https://example.com")).toBe("https://example.com");
+    expect(resolveSiteUrl(undefined, "preview-abc.vercel.app/")).toBe("https://preview-abc.vercel.app");
   });
 });
 
-describe("SITE_URL from NEXT_PUBLIC_SITE_URL", () => {
+describe("SITE_URL from the environment", () => {
   afterEach(() => {
     vi.unstubAllEnvs();
     vi.resetModules();
   });
 
-  it("uses the env value without a trailing slash", async () => {
-    vi.stubEnv("NEXT_PUBLIC_SITE_URL", "https://example.com/");
+  async function loadWith(siteUrl: string, vercelUrl: string) {
+    vi.stubEnv("NEXT_PUBLIC_SITE_URL", siteUrl);
+    vi.stubEnv("NEXT_PUBLIC_VERCEL_URL", vercelUrl);
     vi.resetModules();
-    const mod = await import("@/lib/site");
+    return import("@/lib/site");
+  }
+
+  it("uses NEXT_PUBLIC_SITE_URL without a trailing slash", async () => {
+    const mod = await loadWith("https://example.com/", "preview-abc.vercel.app");
     expect(mod.SITE_URL).toBe("https://example.com");
     expect(mod.site.url).toBe("https://example.com");
   });
 
-  it("falls back when the env value is empty", async () => {
-    vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
-    vi.resetModules();
-    const mod = await import("@/lib/site");
+  it("uses NEXT_PUBLIC_VERCEL_URL on previews", async () => {
+    const mod = await loadWith("", "preview-abc.vercel.app");
+    expect(mod.SITE_URL).toBe("https://preview-abc.vercel.app");
+    expect(mod.site.url).toBe("https://preview-abc.vercel.app");
+  });
+
+  it("falls back to localhost when neither is set", async () => {
+    const mod = await loadWith("", "");
     expect(mod.SITE_URL).toBe("http://localhost:3000");
   });
 
   it("fails loudly on an invalid URL", async () => {
-    vi.stubEnv("NEXT_PUBLIC_SITE_URL", "not a url");
-    vi.resetModules();
-    await expect(import("@/lib/site")).rejects.toThrow();
+    await expect(loadWith("not a url", "")).rejects.toThrow();
   });
 });

@@ -7,14 +7,26 @@ import { SiteConfig } from "@/lib/content/schema";
 
 const FALLBACK_SITE_URL = "http://localhost:3000";
 
-/** Uses the fallback when the value is unset or blank, and strips trailing slashes. */
-export function resolveSiteUrl(raw: string | undefined): string {
-  const value = raw?.trim();
-  if (!value) return FALLBACK_SITE_URL;
-  return value.replace(/\/+$/, "");
+/**
+ * Picks the site URL, in this order:
+ * 1. `siteUrl` (NEXT_PUBLIC_SITE_URL), set for Production only.
+ * 2. `https://${vercelUrl}` (NEXT_PUBLIC_VERCEL_URL, a bare host Vercel sets on every build), for previews.
+ * 3. http://localhost:3000.
+ * Blank values count as unset. Trailing slashes are stripped.
+ */
+export function resolveSiteUrl(siteUrl: string | undefined, vercelUrl?: string): string {
+  const explicit = siteUrl?.trim();
+  if (explicit) return stripTrailingSlashes(explicit);
+  const host = vercelUrl?.trim();
+  if (host) return stripTrailingSlashes(/^https?:\/\//.test(host) ? host : `https://${host}`);
+  return FALLBACK_SITE_URL;
 }
 
-export const SITE_URL = resolveSiteUrl(process.env.NEXT_PUBLIC_SITE_URL);
+function stripTrailingSlashes(url: string): string {
+  return url.replace(/\/+$/, "");
+}
+
+export const SITE_URL = resolveSiteUrl(process.env.NEXT_PUBLIC_SITE_URL, process.env.NEXT_PUBLIC_VERCEL_URL);
 
 const email = "grdzelishvilidaviti@gmail.com";
 
