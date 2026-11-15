@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { OutboundClickTracker } from "@/components/outbound-click-tracker";
 import { PostHogProvider } from "@/components/posthog-provider";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -48,6 +49,7 @@ export default function RootLayout({
               {children}
             </main>
             <SiteFooter />
+            <OutboundClickTracker />
           </PostHogProvider>
         </ThemeProvider>
       </body>
