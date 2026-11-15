@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { setAnalyticsClient } from "@/lib/analytics";
 
 const posthog = vi.hoisted(() => ({ init: vi.fn(), capture: vi.fn() }));
-vi.mock("posthog-js", () => ({ default: posthog }));
+vi.mock("posthog-js/dist/module.slim", () => ({ default: posthog }));
 
 const nav = vi.hoisted(() => ({ pathname: "/", search: "" }));
 vi.mock("next/navigation", () => ({
