@@ -16,6 +16,15 @@ type Props = { params: Promise<{ tag: string }> };
  */
 const NO_TAGS_PLACEHOLDER = "_";
 
+/**
+ * Opt out of instant-navigation validation (the dev "URL data during prerendering"
+ * insight). The page reads params outside <Suspense> on purpose: an unknown tag
+ * must call notFound() before the response starts, so it returns a real 404.
+ * Behind <Suspense> the shell streams first and the status is stuck at 200.
+ * Known tags are still prerendered at build time.
+ */
+export const instant = false;
+
 export function generateStaticParams() {
   const tags = getAllTags().map(({ tag }) => ({ tag }));
   return tags.length > 0 ? tags : [{ tag: NO_TAGS_PLACEHOLDER }];

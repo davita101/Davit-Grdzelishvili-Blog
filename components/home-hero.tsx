@@ -12,7 +12,7 @@ export function HomeHero({ site = defaultSite }: { site?: SiteConfig }) {
   return (
     <section
       aria-labelledby="hero-name"
-      className="flex flex-col gap-6 duration-700 animate-in fade-in slide-in-from-bottom-2 motion-reduce:animate-none"
+      className="flex flex-col gap-6 duration-700 animate-in fade-in-1 slide-in-from-bottom-2 motion-reduce:animate-none"
     >
       <Image
         src={site.avatar}

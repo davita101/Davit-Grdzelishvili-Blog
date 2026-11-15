@@ -13,9 +13,9 @@ export function SiteHeader() {
         </Link>
 
         <div className="flex items-center gap-1">
-          <NavLinks />
+          <NavLinks items={site.nav} />
           <ThemeToggle />
-          <MobileNav />
+          <MobileNav items={site.nav} />
         </div>
       </div>
     </header>

@@ -18,6 +18,15 @@ type Props = { params: Promise<{ slug: string }> };
  */
 const NO_POSTS_PLACEHOLDER = "_";
 
+/**
+ * Opt out of instant-navigation validation (the dev "URL data during prerendering"
+ * insight). The page reads params outside <Suspense> on purpose: an unknown slug
+ * must call notFound() before the response starts, so it returns a real 404.
+ * Behind <Suspense> the shell streams first and the status is stuck at 200.
+ * Known slugs are still prerendered at build time.
+ */
+export const instant = false;
+
 export function generateStaticParams() {
   const slugs = getAllPosts().map((post) => ({ slug: post.slug }));
   return slugs.length > 0 ? slugs : [{ slug: NO_POSTS_PLACEHOLDER }];
