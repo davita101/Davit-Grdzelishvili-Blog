@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PostHeader } from "@/components/post-header";
 import { PostNav } from "@/components/post-nav";
+import { PostReadTracker } from "@/components/post-read-tracker";
 import { Toc } from "@/components/toc";
 import { getAdjacentPosts, getAllPosts, getPostBySlug } from "@/lib/content/posts";
 import { blogPostingJsonLd, serializeJsonLd } from "@/lib/json-ld";
@@ -79,7 +80,8 @@ export default async function PostPage({ params }: Props) {
         // serializeJsonLd escapes "<", so post content cannot close this tag.
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(blogPostingJsonLd(post, site)) }}
       />
-      <article className="w-full max-w-content min-w-0">
+      <article className="relative w-full max-w-content min-w-0">
+        <PostReadTracker key={post.slug} slug={post.slug} />
         <PostHeader {...post} />
         <div className="post-body mt-10">{content}</div>
         <PostNav prev={prev} next={next} />
