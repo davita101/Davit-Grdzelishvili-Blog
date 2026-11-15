@@ -11,6 +11,7 @@ import { getPostSource } from "@/lib/content/posts";
 
 type MdxOptions = NonNullable<NonNullable<MDXRemoteProps["options"]>["mdxOptions"]>;
 type HastNode = { type: string; value?: string; children?: HastNode[] };
+type HastParent = { type: string; tagName?: string; name?: string | null; value?: string; children?: HastParent[] };
 
 /** Components swapped in for MDX elements. */
 export const mdxComponents: NonNullable<MDXRemoteProps["components"]> = {
@@ -47,6 +48,46 @@ export const autolinkOptions: AutolinkOptions = {
   ],
 };
 
+/** An image in the tree: a Markdown image, or an <img> written as JSX in MDX. */
+function isImage(node: HastParent): boolean {
+  if (node.type === "element") return node.tagName === "img";
+  return (node.type === "mdxJsxTextElement" || node.type === "mdxJsxFlowElement") && node.name === "img";
+}
+
+function isBlankText(node: HastParent): boolean {
+  return node.type === "text" && !node.value?.trim();
+}
+
+/**
+ * MdxImage renders a <figure>, which is not allowed inside <p>. Markdown wraps an
+ * image on its own line in a paragraph, and the browser then reshapes <p><figure>,
+ * so React's hydration fails (#418). This rehype step:
+ * - drops the <p> around a paragraph that holds only images (and whitespace);
+ * - turns a <p> that mixes text and an image into a <div>.
+ */
+export function rehypeUnwrapImages() {
+  function visit(parent: HastParent): void {
+    const children = parent.children;
+    if (!children) return;
+    const next: HastParent[] = [];
+    for (const child of children) {
+      visit(child);
+      const isParagraph = child.type === "element" && child.tagName === "p";
+      const inner = child.children ?? [];
+      if (isParagraph && inner.some(isImage)) {
+        if (inner.every((c) => isImage(c) || isBlankText(c))) {
+          next.push(...inner.filter(isImage));
+          continue;
+        }
+        child.tagName = "div";
+      }
+      next.push(child);
+    }
+    parent.children = next;
+  }
+  return (tree: HastParent) => visit(tree);
+}
+
 /** Shiki dual theme; CSS in globals.css picks the colors from the .dark class. Build time only, no client JS. */
 export const prettyCodeOptions: PrettyCodeOptions = {
   theme: { light: "github-light", dark: "github-dark" },
@@ -56,7 +97,12 @@ export const prettyCodeOptions: PrettyCodeOptions = {
 
 export const mdxOptions: MdxOptions = {
   remarkPlugins: [remarkGfm],
-  rehypePlugins: [rehypeSlug, [rehypeAutolinkHeadings, autolinkOptions], [rehypePrettyCode, prettyCodeOptions]],
+  rehypePlugins: [
+    rehypeUnwrapImages,
+    rehypeSlug,
+    [rehypeAutolinkHeadings, autolinkOptions],
+    [rehypePrettyCode, prettyCodeOptions],
+  ],
 };
 
 /** Compiles an MDX string with the post plugins and components. */
