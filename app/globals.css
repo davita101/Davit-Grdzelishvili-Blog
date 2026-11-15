@@ -310,10 +310,10 @@
     color: var(--shiki-dark);
   }
   /* Shiki colors below AA (4.5:1) on the code block background, swapped for darker/lighter shades. */
-  html:not(.dark) .post-body figure[data-rehype-pretty-code-figure] code span[style*="--shiki-light:#E36209"] {
+  html:not(.dark) .post-body figure[data-rehype-pretty-code-figure] code span[style*="--shiki-light:#e36209" i] {
     color: #bc4c00; /* github-light orange 3.49:1 -> 5.03:1 on white */
   }
-  .dark .post-body figure[data-rehype-pretty-code-figure] code span[style*="--shiki-dark:#6A737D"] {
+  .dark .post-body figure[data-rehype-pretty-code-figure] code span[style*="--shiki-dark:#6a737d" i] {
     color: #959da5; /* github-dark comment 3.68:1 -> 6.45:1 on card */
   }
 }
