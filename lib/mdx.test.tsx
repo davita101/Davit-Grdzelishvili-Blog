@@ -77,3 +77,38 @@ describe("renderPost", () => {
     expect(await renderPost("does-not-exist")).toBeNull();
   });
 });
+
+describe("images in paragraphs (hydration #418 regression)", () => {
+  /** True when a <figure> opens before the enclosing <p> closes: invalid HTML. */
+  const figureInsideP = (html: string) => /<p(?:\s[^>]*)?>(?:(?!<\/p>)[\s\S])*<figure/.test(html);
+
+  it("never puts the image <figure> inside a <p>", async () => {
+    const html = renderToStaticMarkup(await compilePostMdx("Intro.\n\n![A diagram](/posts/x/diagram.png)\n\nOutro."));
+    expect(html).toContain("<figure");
+    expect(figureInsideP(html)).toBe(false);
+    expect(html).toContain("<p>Intro.</p>");
+    expect(html).toContain("<p>Outro.</p>");
+  });
+
+  it("unwraps a paragraph of several images", async () => {
+    const html = renderToStaticMarkup(
+      await compilePostMdx("![One](/posts/x/1.png)\n![Two](/posts/x/2.png)"),
+    );
+    expect(html.match(/<figure/g)).toHaveLength(2);
+    expect(html).not.toContain("<p");
+  });
+
+  it("turns a paragraph with text and an image into a <div>", async () => {
+    const html = renderToStaticMarkup(await compilePostMdx("See this: ![Chart](/posts/x/chart.png) above."));
+    expect(figureInsideP(html)).toBe(false);
+    expect(html).toMatch(/<div>See this: <figure/);
+  });
+
+  it("handles a JSX <img> with a size", async () => {
+    const html = renderToStaticMarkup(
+      await compilePostMdx('<img src="/posts/x/sized.png" alt="Sized" width="600" height="300" />'),
+    );
+    expect(figureInsideP(html)).toBe(false);
+    expect(html).toContain('width="600"');
+  });
+});
