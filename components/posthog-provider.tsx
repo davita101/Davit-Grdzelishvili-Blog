@@ -45,6 +45,9 @@ export function PostHogProvider({
         disable_surveys: true,
         // Don't pull extra scripts from PostHog's asset CDN (keeps the CSP to api_host).
         disable_external_dependency_loading: true,
+        // No feature flags or remote config: skips /flags and the eu-assets /config fetch
+        // (which the CSP blocks). Everything we use is set here instead.
+        advanced_disable_flags: true,
       });
       setAnalyticsClient(posthog);
       setReady(true);
