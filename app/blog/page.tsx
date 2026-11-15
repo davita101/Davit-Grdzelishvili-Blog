@@ -6,7 +6,10 @@ import { SITE_URL, site } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Blog",
   description: `Posts by ${site.name}.`,
-  alternates: { canonical: `${SITE_URL}/blog` },
+  alternates: {
+    canonical: `${SITE_URL}/blog`,
+    types: { "application/rss+xml": [{ url: `${SITE_URL}/rss.xml`, title: `${site.name} RSS` }] },
+  },
 };
 
 export default function BlogPage() {
