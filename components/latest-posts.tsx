@@ -1,13 +1,26 @@
 import Link from "next/link";
 import { PostCard } from "@/components/post-card";
+import { PostList } from "@/components/post-list";
 import { getAllPosts } from "@/lib/content/posts";
 
 const COUNT = 3;
 
-/** The newest posts under the home hero. Hidden when there are none. */
+/** The newest posts under the home hero, or the shared empty state when there are none. */
 export function LatestPosts() {
   const posts = getAllPosts().slice(0, COUNT);
-  if (posts.length === 0) return null;
+
+  if (posts.length === 0) {
+    return (
+      <section aria-labelledby="latest-posts-heading" className="mt-16 sm:mt-24">
+        <h2 id="latest-posts-heading" className="text-2xl font-semibold tracking-tight">
+          Latest posts
+        </h2>
+        <div className="mt-6">
+          <PostList posts={[]} />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section aria-labelledby="latest-posts-heading" className="mt-16 sm:mt-24">
