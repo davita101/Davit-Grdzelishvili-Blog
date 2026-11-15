@@ -1,9 +1,9 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { setAnalyticsClient } from "@/lib/analytics";
 
 const posthog = vi.hoisted(() => ({ init: vi.fn(), capture: vi.fn() }));
-vi.mock("posthog-js", () => ({ default: posthog }));
+vi.mock("posthog-js/dist/module.slim", () => ({ default: posthog }));
 
 const nav = vi.hoisted(() => ({ pathname: "/", search: "" }));
 vi.mock("next/navigation", () => ({
@@ -19,6 +19,10 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  // Unmount first: a provider that turns ready as a test ends would otherwise track
+  // its $pageview after the client is reset, and the buffered event would leak into
+  // the next test when that test's provider sets the client.
+  cleanup();
   vi.clearAllMocks();
   setAnalyticsClient(null);
 });

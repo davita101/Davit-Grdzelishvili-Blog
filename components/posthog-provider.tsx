@@ -41,7 +41,7 @@ export function PostHogProvider({
     let timerId: number | undefined;
 
     const load = () => {
-      import("posthog-js").then(({ default: posthog }) => {
+      import("posthog-js/dist/module.slim").then(({ default: posthog }) => {
         if (cancelled) return;
         posthog.init(key, {
           api_host: host,
