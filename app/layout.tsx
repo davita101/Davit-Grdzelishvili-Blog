@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { PostHogProvider } from "@/components/posthog-provider";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { SkipLink } from "@/components/skip-link";
@@ -38,13 +39,16 @@ export default function RootLayout({
     >
       <body className="flex min-h-svh flex-col">
         <ThemeProvider>
-          <SkipLink />
-          <SiteHeader />
-          {/* Pages set their own width: max-w-content (reading) or max-w-wide (grids). */}
-          <main id="main" tabIndex={-1} className="flex-1 outline-none">
-            {children}
-          </main>
-          <SiteFooter />
+          {/* Analytics is off (and posthog-js never loads) unless NEXT_PUBLIC_POSTHOG_KEY is set. */}
+          <PostHogProvider>
+            <SkipLink />
+            <SiteHeader />
+            {/* Pages set their own width: max-w-content (reading) or max-w-wide (grids). */}
+            <main id="main" tabIndex={-1} className="flex-1 outline-none">
+              {children}
+            </main>
+            <SiteFooter />
+          </PostHogProvider>
         </ThemeProvider>
       </body>
     </html>
