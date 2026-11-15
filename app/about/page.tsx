@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { AboutBio } from "@/components/about-bio";
 import { ContactBlock } from "@/components/contact-block";
+import { ExperienceTimeline } from "@/components/experience-timeline";
 import { SkillGroups } from "@/components/skill-groups";
 import { SITE_URL, site } from "@/lib/site";
 
@@ -35,7 +36,7 @@ export default function AboutPage() {
         <AboutBio />
       </section>
 
-      {/* Experience timeline from content/experience.ts goes here (P3P-T05). */}
+      <ExperienceTimeline />
 
       <SkillGroups />
       <ContactBlock />
