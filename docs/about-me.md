@@ -42,7 +42,12 @@ Full-Stack Developer focused on React, Next.js, TanStack and TypeScript. Develop
 
 ## Education
 
-_Not on LinkedIn. Ask the product owner._
+_From the product owner, 2026-11-15._
+
+- Web development course at Goal-Oriented Academy (GOA), May 2023 – Nov 2023. Not an official institution or degree.
+- Finished secondary school (12th grade). No university degree.
+
+Display rule (approved 2026-11-15): mention the GOA course as one line in the longer `/about` bio only. No Education section, no school, never call the course a degree.
 
 ## Skills
 
@@ -71,8 +76,8 @@ Descriptions marked _Needs description_: ask the product owner before publishing
 
 ## Open questions for the product owner
 
-1. Education (university, courses, certificates)?
-2. Show email publicly on the site (mailto), or links only?
+1. ~~Education~~ Answered 2026-11-15 (see Education).
+2. ~~Show email publicly~~ Answered 2026-11-14: mailto shown.
 3. Languages spoken (Georgian, English, others)?
 4. Blog topics you want to write about?
 
