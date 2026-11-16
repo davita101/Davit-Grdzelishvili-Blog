@@ -1,0 +1,99 @@
+---
+title: "How I Work with AI Agents: A Small Team That Builds My Blog"
+description: "My setup for building software with AI agents: a lead and a developer agent, written rules, one task at a time, PR reviews, and tools that cut token use."
+date: 2026-11-16
+tags: [ai-agents, workflow, claude-code, nextjs]
+draft: false
+---
+
+## Why I write this down
+
+This blog was built by a small team of AI agents. I'm the product owner. They plan, write code and open pull requests. I decide and review.
+
+Why? I'm one person, but I want to ship like a small team. Agents do the building. I spend my time on decisions and reviews.
+
+## The team
+
+| Role          | Who            | Does                                                                                 |
+| ------------- | -------------- | ------------------------------------------------------------------------------------ |
+| Product owner | Me             | Sets goals, approves plans and contract changes, reviews PRs, owns accounts and keys |
+| Lead          | Daviti (agent) | Breaks each phase into tasks, plans contract changes, reviews work                   |
+| Developer     | Giorgi (agent) | Takes one task, builds it on a branch, opens a PR                                    |
+| Developer     | Other (agent)  | If i need second agent I am adding and giving taks                                   |
+
+The agents run from JSM HQ. Each session, HQ tells the agent its role, the team, the workflow and its tools.
+
+JSM HQ is my own agent hub. I built it to run the team in one place: roles, boards, tasks and status.
+
+## Rules live in files, not in chat
+
+Agents forget. Files don't. So every rule is written down in the repo:
+
+- `CLAUDE.md`: team rules every agent follows.
+- `docs/project.md`: what we build. Pages, content model, stack, security, design.
+- `docs/plan.md`: the phases, in build order. I write this one by hand.
+
+A task points to the `project.md` sections it needs. The agent reads those, not the whole file. Less to read means fewer mistakes and fewer tokens.
+
+## The workflow
+
+1. I write the phases in `plan.md`.
+2. The lead and I break a phase into tasks on a JSM HQ board.
+3. The developer takes one task and works on a new branch from `main`.
+4. Before a PR, all checks must pass: `typecheck`, `lint`, `test`, `build`.
+5. The PR lists what changed, how it was tested, and each "done when" item.
+6. Vercel builds a preview. The agent checks it at 375 px and desktop, in light and dark theme.
+7. I review, and the agent fixes every valid comment on the same branch.
+8. I merge. Agents never merge their own PR or push to `main`.
+
+A phase is done when all its tasks are merged and its checks pass on the latest preview. Production went live only once, at the end.
+
+## When agents must stop and ask
+
+The most useful rule I wrote is a list of moments where the agent stops:
+
+| Situation                                                                   | Why                              |
+| --------------------------------------------------------------------------- | -------------------------------- |
+| Changing the contract (`lib/site.ts`, the content schema, post frontmatter) | Everything depends on it         |
+| A new backend, database, auth or paid tool                                  | Out of scope unless I approve    |
+| The task is unclear                                                         | Guessing costs more than asking  |
+| An account, key or sign-in                                                  | That's my job, never the agent's |
+
+## Talking to me
+
+I told the agents how to report back:
+
+- Lead with the answer. No preamble.
+- Short sentences, plain words.
+- A table for comparisons, a numbered list for steps.
+- For a decision: 2–4 options, the recommended one first, one line on why.
+- Say what you know and what you're guessing.
+
+This made my reviews much faster. A short answer or a table lets me decide in seconds, not minutes.
+
+## Saving tokens
+
+Every agent runs the same three tools:
+
+| Tool     | Does                                                                              |
+| -------- | --------------------------------------------------------------------------------- |
+| RTK      | Compresses shell output (git, tests, builds) before the agent reads it            |
+| Caveman  | Makes the agent's own replies shorter                                             |
+| Graphify | Builds a local code graph, so the agent queries it instead of reading whole files |
+
+One rule keeps Caveman in check: anything I read, like PR bodies and commit messages, stays in plain full sentences.
+
+It adds up. Across all my projects, RTK has run 11,407 commands and saved 96.5M tokens, 86.7% of what the agents would have read.
+
+## MCP servers I connect
+
+MCP servers let an agent use other tools directly, not just my code. I add them per project.
+
+| MCP           | What I use it for                                                     |
+| ------------- | --------------------------------------------------------------------- |
+| Talk to Figma | Free, open-source MCP. The agent reads and edits my Figma designs.    |
+| shadcn/ui     | Finds and adds shadcn components, so designs turn into real UI faster |
+| Vercel        | Deployments, previews and logs                                        |
+| PostHog       | Product analytics: events and how people use the app                  |
+
+For Figma work, Talk to Figma is the one I always use. On Figma projects.
