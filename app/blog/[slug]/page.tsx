@@ -95,10 +95,10 @@ export default async function PostPage({ params }: Props) {
         <div className="post-body mt-10">{content}</div>
         <PostNav prev={prev} next={next} />
       </article>
-      <aside className="hidden w-56 shrink-0 lg:block">
-        <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
-          <Toc headings={post.headings} />
-        </div>
+      {/* The aside itself sticks (self-start keeps it its own height), so it no longer
+          relies on being stretched to the article's height. Long outlines scroll inside. */}
+      <aside className="sticky top-24 hidden max-h-[calc(100svh-8rem)] w-56 shrink-0 self-start overflow-y-auto lg:block">
+        <Toc headings={post.headings} />
       </aside>
     </div>
   );
