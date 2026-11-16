@@ -1,7 +1,9 @@
 # Davit Grdzelishvili — Portfolio & Blog
 
-Personal portfolio and blog: MDX posts, projects and an about page. Static, fast, and built end to end by a small team of AI agents with a human product owner.
+[![Personal Blog CI](https://github.com/davita101/Davit-Grdzelishvili-Blog/actions/workflows/ci.yml/badge.svg)](https://github.com/davita101/Davit-Grdzelishvili-Blog/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+Personal portfolio and blog: MDX posts, projects and an about page. Static, fast, and built end to end by a small team of AI agents with a human product owner.
 **Live:** https://davit-grdzelishvili-blog.vercel.app
 
 ## Features
