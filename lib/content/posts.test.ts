@@ -1,6 +1,13 @@
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createPostLoader, extractHeadings, getAllPosts, getPostSource, readingTime } from "@/lib/content/posts";
+import {
+  createPostLoader,
+  extractHeadings,
+  getAllPosts,
+  getPostBySlug,
+  getPostSource,
+  readingTime,
+} from "@/lib/content/posts";
 
 const fixtures = path.join(__dirname, "__fixtures__");
 const loader = () => createPostLoader(path.join(fixtures, "posts"));
@@ -179,14 +186,37 @@ describe("readingTime", () => {
 });
 
 describe("content/posts (the real sample posts)", () => {
-  it("are all valid drafts, so production shows none of them", () => {
+  const SAMPLE_SLUGS = ["mdx-feature-tour", "tables-and-task-lists"];
+
+  it("are all valid (the loader validates every file without throwing)", () => {
     vi.stubEnv("VERCEL_ENV", "preview");
-    const posts = getAllPosts();
-    expect(posts.length).toBeGreaterThanOrEqual(2);
-    expect(posts.every((p) => p.draft === true)).toBe(true);
+    expect(() => getAllPosts()).not.toThrow();
+    expect(getAllPosts().length).toBeGreaterThanOrEqual(SAMPLE_SLUGS.length);
+  });
+
+  it("keep the sample posts as drafts, hidden in production", () => {
+    vi.stubEnv("VERCEL_ENV", "preview");
+    for (const slug of SAMPLE_SLUGS) {
+      expect(getPostBySlug(slug)?.draft, slug).toBe(true);
+    }
 
     vi.stubEnv("VERCEL_ENV", "production");
-    expect(getAllPosts()).toEqual([]);
+    for (const slug of SAMPLE_SLUGS) {
+      expect(getPostBySlug(slug), slug).toBeNull();
+      expect(getPostSource(slug), slug).toBeNull();
+    }
+    const productionSlugs = slugs(getAllPosts());
+    for (const slug of SAMPLE_SLUGS) expect(productionSlugs, slug).not.toContain(slug);
+  });
+
+  it("show exactly the non-draft posts in production, so no draft leaks", () => {
+    vi.stubEnv("VERCEL_ENV", "preview");
+    const published = slugs(getAllPosts().filter((p) => !p.draft));
+
+    vi.stubEnv("VERCEL_ENV", "production");
+    const production = getAllPosts();
+    expect(production.every((p) => p.draft === false)).toBe(true);
+    expect(slugs(production)).toEqual(published);
   });
 
   it("together cover every §6.4 MDX feature", () => {
